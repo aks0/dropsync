@@ -20,25 +20,33 @@ import com.dropbox.sync.android.DbxPath;
 
 public class PsDipsActivity extends Activity {
 
-    private static final String appKey = "80zbdtivskai8tt";
-    private static final String appSecret = "hdsznxfyb55xbis";
+    private static final String appKey = "d459xjjuo51dqhc";
+    private static final String appSecret = "2te8g6uqslbjmva";
 
     private static final int REQUEST_LINK_TO_DBX = 0;
 
     private TextView mTestOutput;
     private Button mLinkButton;
+    private Button mSyncButton;
     private DbxAccountManager mDbxAcctMgr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_hello_dropbox);
+        setContentView(R.layout.activity_ps_dips);
         mTestOutput = (TextView) findViewById(R.id.test_output);
         mLinkButton = (Button) findViewById(R.id.link_button);
+        mSyncButton = (Button) findViewById(R.id.sync_all);
         mLinkButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 onClickLinkToDropbox();
+            }
+        });
+        mSyncButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                throw new UnsupportedOperationException("not implemented");
             }
         });
 
@@ -59,11 +67,13 @@ public class PsDipsActivity extends Activity {
     private void showLinkedView() {
         mLinkButton.setVisibility(View.GONE);
         mTestOutput.setVisibility(View.VISIBLE);
+        mSyncButton.setVisibility(View.VISIBLE);
     }
 
     private void showUnlinkedView() {
         mLinkButton.setVisibility(View.VISIBLE);
         mTestOutput.setVisibility(View.GONE);
+        mSyncButton.setVisibility(View.GONE);
     }
 
     private void onClickLinkToDropbox() {
