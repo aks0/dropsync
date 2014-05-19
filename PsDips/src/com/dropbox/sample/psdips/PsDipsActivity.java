@@ -1,11 +1,14 @@
 package com.dropbox.sample.psdips;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -93,6 +96,7 @@ public class PsDipsActivity extends Activity {
         }
     }
 
+    @SuppressLint("NewApi")
     private void doDropboxTest() {
         mTestOutput.setText("Dropbox Sync API Version "+DbxAccountManager.SDK_VERSION_NAME+"\n");
         try {
@@ -135,6 +139,10 @@ public class PsDipsActivity extends Activity {
                     testFile.close();
                 }
                 mTestOutput.append("\nRead file '" + testPath + "' and got data:\n    " + resultData);
+
+                // print directory contents.
+                File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
+                Util.printDirectoryFiles(path);
             } else if (dbxFs.isFolder(testPath)) {
                 mTestOutput.append("'" + testPath.toString() + "' is a folder.\n");
             }
