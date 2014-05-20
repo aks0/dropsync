@@ -143,6 +143,19 @@ public class PsDipsActivity extends Activity {
                 // print directory contents.
                 File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
                 Util.printDirectoryFiles(path);
+                
+                // copy img from internal memory to dropbox
+                String src_path = path.getAbsoluteFile() + "/Facebook/IMG_540940567317936.jpeg";
+                File src = new File(src_path);
+                DbxPath dest_path = new DbxPath(DbxPath.ROOT, "test_img.jpeg");
+                DbxFile dest = null;
+                if (!dbxFs.exists(dest_path)) {
+                    dest = dbxFs.create(dest_path);
+                } else {
+                    dest = dbxFs.open(dest_path);
+                }
+                Util.copy(src, dest);
+                dest.close();
             } else if (dbxFs.isFolder(testPath)) {
                 mTestOutput.append("'" + testPath.toString() + "' is a folder.\n");
             }
