@@ -10,7 +10,7 @@ import com.dropbox.sync.android.DbxFile;
 
 import android.util.Log;
 
-public class Util {
+public class FileSync {
 
     public static void printDirectoryFiles(File file) {
         if (!file.isDirectory()) {
