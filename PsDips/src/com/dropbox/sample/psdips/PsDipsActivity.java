@@ -9,12 +9,14 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.dropbox.sample.psdips.R;
+import com.dropbox.sync.android.DbxAccount;
 import com.dropbox.sync.android.DbxAccountManager;
 import com.dropbox.sync.android.DbxFile;
 import com.dropbox.sync.android.DbxFileInfo;
@@ -31,7 +33,7 @@ public class PsDipsActivity extends Activity {
     private TextView mTestOutput;
     private Button mLinkButton;
     private Button mSyncButton;
-    private DbxAccountManager mDbxAcctMgr;
+    private static DbxAccountManager mDbxAcctMgr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,25 +144,35 @@ public class PsDipsActivity extends Activity {
 
                 // print directory contents.
                 File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
-                FileSync.printDirectoryFiles(path);
+                //FileSync.printDirectoryFiles(path);
                 
                 // copy img from internal memory to dropbox
                 String src_path = path.getAbsoluteFile() + "/Facebook/IMG_540940567317936.jpeg";
                 File src = new File(src_path);
                 DbxPath dest_path = new DbxPath(DbxPath.ROOT, "test_img.jpeg");
-                DbxFile dest = null;
                 if (!dbxFs.exists(dest_path)) {
-                    dest = dbxFs.create(dest_path);
-                } else {
-                    dest = dbxFs.open(dest_path);
+                    DbxFile dest = dbxFs.create(dest_path);
+                    FileSync.copy(src, dest);
+                    dest.close();
                 }
-                FileSync.copy(src, dest);
-                dest.close();
+                
+                // sync test folder
+                String src_folder_path = path.getAbsolutePath() + "/test-sync";
+                Log.d("akshay", "syncing " + src_folder_path);
+                DbxPath dest_folder_path = new DbxPath(DbxPath.ROOT, "test-sync");
+                if (!dbxFs.exists(dest_folder_path)) {
+                    dbxFs.createFolder(dest_folder_path);
+                }
+                FileSync.syncFolderMobileToDbx(src_folder_path, dest_folder_path);
             } else if (dbxFs.isFolder(testPath)) {
                 mTestOutput.append("'" + testPath.toString() + "' is a folder.\n");
             }
         } catch (IOException e) {
             mTestOutput.setText("Dropbox test failed: " + e);
         }
+    }
+    
+    public static DbxAccount getDbxLinkedAccount() {
+        return mDbxAcctMgr.getLinkedAccount();
     }
 }
